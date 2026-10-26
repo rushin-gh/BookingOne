@@ -49,6 +49,7 @@ if (app.Environment.IsDevelopment())
     app.MapSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
