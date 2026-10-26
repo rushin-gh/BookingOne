@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
@@ -10,6 +12,14 @@ namespace WebAPI.Controllers
         [
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         ];
+
+        private readonly JwtOptions _jwt;
+
+        public WeatherForecastController(IOptions<JwtOptions> options)
+        {
+            _jwt = options.Value;
+        }
+
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
