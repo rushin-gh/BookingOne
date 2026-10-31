@@ -41,11 +41,11 @@ namespace WebAPI.Services
                signingCredentials: creds
             );
 
-            return new LoginResponse()
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                ExpiresAt = expires
-            };
+            return new LoginResponse
+            (
+                new JwtSecurityTokenHandler().WriteToken(token),
+                expires
+            );
         }
 
     }

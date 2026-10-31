@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Contracts;
 using WebAPI.Models;
@@ -35,6 +36,36 @@ namespace WebAPI.Controllers
             var loginResponse = tokens.CreateAccessToken(user, roles);
 
             return Ok(loginResponse);
+        }
+
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterRequest request)
+        {
+            var user = new AppUser
+            {
+                UserName = request.Email,
+                Email = request.Email
+            };
+
+            var result = await userManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(error.Code, error.Description);
+
+                return ValidationProblem(ModelState);   // 400 with ProblemDetails
+            }
+
+            var roleResult = await userManager.AddToRoleAsync(user, "Customer");
+            if (!roleResult.Succeeded)
+            {
+                await userManager.DeleteAsync(user);    // don't leave a user with no role
+                return Problem("Could not complete registration.", statusCode: 500);
+            }
+
+            return StatusCode(StatusCodes.Status201Created,
+                new RegisterResponse(user.Id, user.Email!));
         }
     }
 }

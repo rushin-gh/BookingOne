@@ -47,6 +47,29 @@ namespace WebAPI.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "role-admin",
+                            ConcurrencyStamp = "a1b2c3d4-0001-4000-8000-000000000001",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "role-organizer",
+                            ConcurrencyStamp = "a1b2c3d4-0002-4000-8000-000000000002",
+                            Name = "Organizer",
+                            NormalizedName = "ORGANIZER"
+                        },
+                        new
+                        {
+                            Id = "role-customer",
+                            ConcurrencyStamp = "a1b2c3d4-0003-4000-8000-000000000003",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
