@@ -2,15 +2,28 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
+using WebAPI.Models.Auth;
 
 namespace WebAPI.Database
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options)
       : IdentityDbContext<AppUser>(options)
     {
+
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<RefreshToken>(e =>
+            {
+                e.HasIndex(x => x.TokenHash).IsUnique();
+                e.HasIndex(x => x.FamilyId);
+                e.Property(x => x.TokenHash).HasMaxLength(128);
+                e.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
 
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 //using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using WebAPI.Contracts;
 using WebAPI.Models;
 using WebAPI.Models.Auth;
@@ -12,10 +13,10 @@ namespace WebAPI.Controllers
 {
     [Route("api/v1/auth")]
     [ApiController]
-    public class AuthController(UserManager<AppUser> userManager, ITokenService tokens) : ControllerBase
+    public class AuthController(UserManager<AppUser> userManager, ITokenService tokenService) : ControllerBase
     {
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
             if (user is null)
@@ -33,11 +34,36 @@ namespace WebAPI.Controllers
             await userManager.ResetAccessFailedCountAsync(user);
 
             var roles = await userManager.GetRolesAsync(user);
-            var loginResponse = tokens.CreateAccessToken(user, roles);
+            var loginResponse = tokenService.GetLoginToken(user, roles);
 
             return Ok(loginResponse);
         }
 
+        [HttpPost("refresh")]
+        public async Task<ActionResult<LoginResponse>> Refresh([Required] RefreshRequest request)
+        {
+            // TODO : Implement new class
+            /*
+                Response {
+                    IsSuccess,
+                    StatusCode,
+                    Message,
+                    ErrorMessage
+                }
+                 
+            */
+
+            LoginResponse loginResponse;
+            try
+            {
+                loginResponse = await tokenService.RefreshAccessToken(request);
+            }
+            catch(Exception ex)
+            {
+                loginResponse = null;
+            }
+            return loginResponse;
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)

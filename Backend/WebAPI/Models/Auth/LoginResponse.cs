@@ -1,7 +1,8 @@
 ﻿namespace WebAPI.Models.Auth
 {
     public record LoginResponse(
-        string Token,
-        DateTime ExpiresAt
+        string AccessToken,
+        DateTime ExpiresAt,
+        string RefreshToken
     );
 }

@@ -8,3 +8,6 @@
 --select * from __EFMigrationsHistory
 
 
+--select * from sys.tables
+select * from RefreshTokens
+EXEC sp_help 'dbo.RefreshTokens';

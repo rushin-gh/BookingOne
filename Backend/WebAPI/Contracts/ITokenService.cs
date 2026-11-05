@@ -5,6 +5,8 @@ namespace WebAPI.Contracts
 {
     public interface ITokenService
     {
-        LoginResponse CreateAccessToken(AppUser user, IList<string> roles);
+        LoginResponse GetLoginToken(AppUser user, IList<string> roles);
+
+        Task<LoginResponse> RefreshAccessToken(RefreshRequest request);
     }
 }

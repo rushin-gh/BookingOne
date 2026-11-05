@@ -1,7 +1,14 @@
 ﻿namespace WebAPI.Models.Auth
 {
-    public class RegisterResponse(
-        string UserId,
-        string Email
-    );
+    public record RegisterResponse
+    {
+        public string Id { get; init; } = "";
+        public string Email { get; init; } = "";
+
+        public RegisterResponse(string id, string email)
+        {
+            Id = id;
+            Email = email;
+        }
+    }
 }
