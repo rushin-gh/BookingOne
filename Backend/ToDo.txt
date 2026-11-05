@@ -1,0 +1,24 @@
+1. Creating a generic return type so that services can return errors and controller can decide which statuscode to send
+public enum ErrorType
+{
+    Validation,
+    Unauthorized,
+    NotFound,
+    Conflict,
+    Forbidden
+}
+
+public record Error(ErrorType Type, string Code, string Message);
+
+public class Result<T>
+{
+    public bool IsSuccess { get; }
+    public T? Data { get; }
+    public Error? Error { get; }
+
+    private Result(T data) { IsSuccess = true; Data = data; }
+    private Result(Error error) { IsSuccess = false; Error = error; }
+
+    public static Result<T> Success(T data) => new(data);
+    public static Result<T> Failure(Error error) => new(error);
+}
